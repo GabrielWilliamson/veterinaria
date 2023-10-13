@@ -1,0 +1,118 @@
+<div class="boton-container">    
+    <button id="pagar">Pagar</button>
+  </div>
+<table  class="mi-tabla" id="tabla">
+    <thead>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Importe</th>
+    </thead>
+    <tbody id="bo">
+
+    </tbody>
+</table>
+<style>
+      .boton-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .boton-container button {
+    background-color: #007bff; 
+    color: white; 
+    padding: 10px 20px; 
+    border: none;
+    border-radius: 5px; 
+    margin: 5px; 
+    cursor: pointer;
+  }
+
+  .boton-container button:hover {
+    background-color: #0056b3; 
+  }
+    .div{        
+        display: flex;   
+        text-align: center;
+        flex-direction: column;    
+        padding: 10px;       
+    }
+   
+     .mi-tabla {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 15px;
+      border: 1px solid #ffffff;
+    }
+  
+    .mi-tabla th, .mi-tabla td {
+      padding: 8px;
+      text-align: left;
+      border: 1px solid #ffffff; 
+    }
+    .mi-tabla tbody td{
+        border: 1px solid #ffffff;
+    }
+</style>
+<script>
+    import x from '../data.json'
+    let detalle = [];
+    const pagar=document.getElementById('pagar');
+    pagar.addEventListener('click', ()=>{
+        if(detalle.length===0){
+            alert('sin elementos')
+        }
+        else{
+            var total=0;
+            detalle.forEach(x=>{
+                total=total+x.importe;
+            })
+            alert('El total a pagar es ' +total +'C$');
+        }
+    })
+
+    
+   async function fechdata(){
+    
+    const response = await fetch('api/car.json');
+    const data = await response.json();
+    const tablebody=document.getElementById('bo');
+
+    if(data.length===0){
+        let fila=document.createElement("tr");
+            fila.innerHTML=`<td> Carrito Vacio</td>`;
+            tablebody.appendChild(fila);
+    }else
+    {
+        const conteo={};
+        data.forEach(item=>{
+            if (conteo[item]) {
+        conteo[item] += 1;
+            } else {
+                conteo[item] = 1;
+            }
+        })
+        detalle = Object.keys(conteo).map(
+            codigo => ({ 
+                codigo, 
+                cantidad: conteo[codigo], 
+                name:x.servicios.find(z=>z.id==codigo).name,
+                type:x.servicios.find(z=>z.id==codigo).type,
+                price:x.servicios.find(z=>z.id==codigo).price,
+                importe:conteo[codigo]*x.servicios.find(z=>z.id==codigo).price
+            }));      
+        detalle.forEach(item => {
+            let fila=document.createElement("tr");
+            fila.innerHTML=`<td>${item.codigo}</td> <td>${item.name}</td> <td>${item.type}</td> <td>${item.cantidad}</td> <td>${item.price} C$</td> <td>${item.importe} C$</td>`;
+            tablebody.appendChild(fila);    
+        });
+    }
+
+   }
+   
+    
+    
+   fechdata();
+</script>

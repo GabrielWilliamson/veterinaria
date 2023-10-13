@@ -1,0 +1,86 @@
+---
+interface Props {
+	name: string;	
+	id: string;
+	price: Number;
+	type: string;
+}
+const { id,name,price, type } = Astro.props;
+---
+
+<li class="link-card">
+	<div class="div">
+		<h2>{name}</h2> 
+		<h2>{price} $</h2>	
+		<h2>{type}</h2>
+		<button class="btnAdd" key={id}>Haz clic</button>
+	</div>	
+</li>
+
+<style>
+	.div{
+		text-align: center;	
+	}
+	.link-card {
+		list-style: none;		
+		padding: 1px;
+		background-color: #23262d;	
+		background-size: 400%;
+		border-radius: 7px;
+		background-position: 100%;
+		
+		
+	}
+	.link-card button {	
+		font-size:15px;	
+		color: white;
+		text-decoration:none;
+		border: 1px solid rgba(var(--accent-light), 25%);
+		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		padding: 0.3rem;
+		border-radius: 8px;
+	}
+	.link-card button:hover{
+		color: #808080;
+	}
+	h2 {
+		margin: 0;
+		font-size: 1.25rem;
+		transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		
+	}
+	p {
+		margin-top: 0.5rem;
+		margin-bottom: 0;
+	}
+	
+</style>
+<script>
+
+  document.querySelector('#listServicios').onclick = async (e) =>{
+	if(e.target.classList.contains('btnAdd')){
+		alert('agregado correctamente')
+		const key = e.target.getAttribute('key');
+		try{
+			const response =await fetch('api/car.json',{
+				method:'POST',
+				headers:{'Content-Type': 'application/json',},
+				body:JSON.stringify({id:key})
+			})
+			if (response.ok) 
+			{      
+      			console.log('ID agregado correctamente');
+   			} 
+			else {      
+      		console.error('Error al agregar el ID');
+    		}
+		}catch(error){
+			console.error('Error en la solicitud', error);
+		}		
+	}
+  }
+</script>
+
+
+
+
